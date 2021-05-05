@@ -1,0 +1,35 @@
+#cloud-config
+chpasswd:
+    list: |
+      centos:VMware1!
+    expire: false
+groups:
+  - docker
+users:
+  - default
+  - name: centos
+    ssh-authorized-keys:
+      - ssh-rsa oUAUOXaqM6J8sXJd1THHFXBd/9jmnI60abFj50hqNuk62cN9kHW55HSO/L/Llz/PZyuk0wTbfqzc8BRA3Z0YiLo+I/LIc0= 
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo, docker
+    shell: /bin/bash
+network:
+  version: 2
+  ethernets:
+      ens192:
+          dhcp4: true
+package_update: true
+packages:
+  - mysql-server
+  - net-tools
+runcmd:
+  - systemctl enable mysqld
+  - systemctl start mysqld
+  - sudo mysql -e "CREATE DATABASE wordpress;"
+  - sudo mysql -e "CREATE USER 'wordpress_user'@'%' IDENTIFIED BY 'password';"
+  - sudo mysql -e "GRANT ALL ON wordpress.* TO 'wordpress_user'@'%'"
+  - sudo mysql -e "FLUSH PRIVILEGES;"
+  - sed -i '$abind-address=0.0.0.0' /etc/my.cnf.d/mysql-server.cnf
+  - systemctl restart mysqld
+  - firewall-offline-cmd --add-port=3306/tcp
+  - firewall-cmd --reload
