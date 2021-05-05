@@ -1,1 +1,1 @@
-# the-new-modern-workload-on-vSphere
+# Wordpress and MySQL on the vSphere with Tanzu
