@@ -46,7 +46,7 @@ metadata:
     namespace: demo1
 data:
   user-data: base64 encoded cloud-init.yaml value
-hostname: centos-mysql
+  hostname: centos-mysql
 ---
 apiVersion: vmoperator.vmware.com/v1alpha1
 kind: VirtualMachineService
